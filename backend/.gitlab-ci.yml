@@ -36,8 +36,9 @@ sonarqube-backend-sast:
       - backend/*
   image: sonarsource/sonar-scanner-cli:latest
   script:
+    - cd backend
     - sonar-scanner
-      -Dsonar.sources=\backend
+      #-Dsonar.sources=\backend
       -Dsonar.projectKey=${SONAR_PROJECT_KEY_BACKEND}
       -Dsonar.host.url=${SONARQUBE_URL_BACKEND}
       -Dsonar.login=${SONAR_LOGIN_BACKEND}
