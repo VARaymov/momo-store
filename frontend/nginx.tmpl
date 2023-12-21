@@ -24,9 +24,13 @@ server {
     try_files $uri $uri/ /index.html;
   }
 
-  location /api {
+  location ~ ^/(?:products|categories|orders|metrics|auth/whoami) {
       proxy_pass http://{{ $host }};
       access_log /var/log/nginx/access.log upstream;
   }
 }
 {{ end }}
+
+
+
+

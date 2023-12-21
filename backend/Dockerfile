@@ -7,6 +7,6 @@ RUN go build -o api ./cmd/api
 FROM alpine:3
 WORKDIR /app
 COPY --from=builder /build/api /app/
-USER nobody:nogroup
 
+EXPOSE 8081
 ENTRYPOINT ["./api"]
