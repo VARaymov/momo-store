@@ -26,6 +26,8 @@ build-frontend:
       --tag $CI_REGISTRY_IMAGE/sausage-frontend-nginx:$CI_COMMIT_SHA
       .
     - docker push $CI_REGISTRY_IMAGE/sausage-frontend-nginx:$CI_COMMIT_SHA
+  rules:
+    when: manual
 
 sonarqube-frontend-sast:
   stage: test
