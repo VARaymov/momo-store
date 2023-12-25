@@ -20,5 +20,6 @@ services:
       - /var/run/docker.sock:/tmp/docker.sock:ro
     environment:
       DEFAULT_HOST: backend
+      VUE_APP_API_URL: "backend:8081"
 networks:
   store:
