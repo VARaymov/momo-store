@@ -27,7 +27,7 @@ build-backend:
       .
     - docker push $CI_REGISTRY_IMAGE/store-backend:$CI_COMMIT_SHA
   rules:
-    when: manual
+    - when: manual
 
 sonarqube-backend-sast:
   variables:
