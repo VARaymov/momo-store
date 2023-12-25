@@ -1,8 +1,8 @@
 stages:
   - build
-  #- test
-  #- release
-  #- deploy
+  - test
+  - release
+  - deploy
 
 include:
   - project: 'templates/ci'
@@ -44,18 +44,20 @@ sonarqube-frontend-sast:
       -Dsonar.login=${SONAR_LOGIN_FRONTEND}
       -Dsonar.projectName="19_RAYUMOVVALERY_FRONTEND"
   needs:
-    - build
+    - build-frontend
 
 gitlab-sast:
   stage: test
   needs:
-    - build
+    - build-frontend
   trigger:
     include:
       - template: Security/SAST.gitlab-ci.yml
 
 upload-frontend-latest:
   stage: release
+  needs:
+    - build-frontend
   variables:
     GIT_STRATEGY: none
   image: docker:20.10.12-dind-rootless
