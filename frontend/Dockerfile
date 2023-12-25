@@ -16,10 +16,13 @@ RUN addgroup --system frontuser && \
 		touch /var/run/nginx.pid && \
 		chown -R frontuser:frontuser /var/run/nginx.pid && \
 		mkdir -p /etc/nginx/dhparam && \
-		chown frontuser:frontuser /etc/nginx/dhparam
+		chown frontuser:frontuser /etc/nginx/dhparam 
 
 COPY --chown=frontuser:frontuser --from=builder /app/dist/ /usr/share/nginx/html/
 COPY --chown=frontuser:frontuser --from=builder /app/nginx.tmpl /app/nginx.tmpl
+
+ENV NODE_ENV="production"
+ENV VUE_APP_API_URL="backend:8081"
 
 EXPOSE 80
 USER frontuser
