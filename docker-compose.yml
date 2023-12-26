@@ -1,0 +1,25 @@
+version: "3.3"
+
+services:
+  backend:
+    image: backend:latest
+    container_name: backend
+    environment:
+      VIRTUAL_HOST: backend
+    networks:
+      - store
+  frontend:
+    image: frontend:latest
+    container_name: frontend
+    ports:
+      - "80:80"
+    networks:
+      - store
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    environment:
+      DEFAULT_HOST: backend
+      VUE_APP_API_URL: "backend:8081"
+networks:
+  store:
