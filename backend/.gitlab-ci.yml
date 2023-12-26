@@ -12,13 +12,13 @@ variables:
   VERSION: 1.0.${CI_PIPELINE_ID}
   SONAR_PROJECT_NAME: store_backend
 
+
 build-backend:
   stage: build
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
-    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker login -u ${NEXUS_REPO_USER} -p ${NEXUS_REPO_PASS} ${NEXUS_REPO_URL_BACKEND}
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - cd backend
     - >
@@ -65,12 +65,15 @@ upload-backend-latest:
   image: docker:20.10.12-dind-rootless
   before_script:
     - until docker info; do sleep 1; done
-    #- docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker login -u ${NEXUS_REPO_USER} -p ${NEXUS_REPO_PASS} ${NEXUS_REPO_URL_BACKEND}
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
     - docker pull $CI_REGISTRY_IMAGE/store-backend:$CI_COMMIT_SHA
     - docker tag $CI_REGISTRY_IMAGE/store-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/store-backend:latest
     - docker push $CI_REGISTRY_IMAGE/store-backend:latest
+    - docker save -o store-backend-latest.tar $CI_REGISTRY_IMAGE/store-backend:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/store-backend:latest
+    - gzip store-backend-latest.tar
+    - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file store-backend-latest.tar.gz ${NEXUS_REPO_URL_BACKEND}/store-backend/latest/store-backend-latest.tar.gz 
+
 
 
 
