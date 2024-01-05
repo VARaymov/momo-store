@@ -1,27 +1,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: frontend
+  name: {{ .Chart.Name }}
   namespace: momo-store
   labels:
-    app: frontend
+    app: {{ .Chart.Name }}
 spec:
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   replicas: {{ .Values.replicas }}
   selector:
     matchLabels:
-      app: frontend
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: frontend
+        app: {{ .Chart.Name }}
     spec:
       containers:
-        - name: frontend
+        - name: {{ .Chart.Name }}
           image: {{ .Values.image }}
           imagePullPolicy: {{ .Values.imagePullPolicy }}
           ports:
-            - name: frontend
+            - name: {{ .Chart.Name }}
               containerPort: {{ .Values.appContainerPort }}
           volumeMounts:
             - name: nginx-config-volume
