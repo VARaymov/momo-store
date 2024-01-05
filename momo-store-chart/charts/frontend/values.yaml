@@ -1,0 +1,9 @@
+replicas: 1
+image: gitlab.praktikum-services.ru:5050/std-019-002/momo-store/store-frontend-nginx:latest
+revisionHistoryLimit: 15
+imagePullPolicy: Always
+appContainerPort: 8080
+serviceContainerPort: 8080
+serviceContainerTargerPort: 8080
+ingressHost: momo-store.valery-rayumov.ru
+ingressContainerTargetPort: 8080
