@@ -10,28 +10,15 @@ variable "folder_id" {
   description = "Yandex folder id"
 }
 
-
-terraform {
-  required_providers {
-    yandex = {
-      source = "yandex-cloud/yandex"
-    }
-  }
-  required_version = ">= 0.13"
-}
-
-# Провайдер
-provider "yandex" {
-  token       = var.token
-  cloud_id    = var.cloud_id
-  folder_id   = var.folder_id
-  zone        = "ru-central1-a"
+variable "s3_bucket_name" {
+  description = "Yandex s3 backet name"
 }
 
 # Локальные переменный
 locals {
   cloud_id = var.cloud_id
   folder_id = var.folder_id
+  image_bucket_name = var.s3_bucket_name
 }
 
 # Создание сети
@@ -255,3 +242,76 @@ resource "yandex_vpc_security_group" "k8s-public-services" {
     to_port           = 65535
   }
 }
+
+resource "yandex_iam_service_account" "s3_sa" {
+  name = "s3-sa"
+}
+
+resource "yandex_resourcemanager_folder_iam_member" "s3_editor" {
+  folder_id = var.folder_id
+  role      = "storage.editor"
+  member    = "serviceAccount:${yandex_iam_service_account.s3_sa.id}"
+}
+
+resource "yandex_iam_service_account_static_access_key" "s3_static_key" {
+  service_account_id = yandex_iam_service_account.s3_sa.id
+  description        = "static access key for object storage"
+}
+
+# Таким образом, "momo-store-bucket" - это идентификатор ресурса, который позволяет вам ссылаться на созданный бакет в других частях вашего Terraform-кода. Когда вы обращаетесь к этому ресурсу, вы используете его идентификатор "momo-store-bucket", чтобы получить доступ к его атрибутам или передать его в другие ресурсы.
+
+# Поэтому, в вашем случае, momo-store-bucket - это просто локальное имя для идентификации этого ресурса внутри вашего Terraform-кода. Вы можете выбрать любое уникальное имя, которое вам нравится, при определении ресурсов в Terraform.
+resource "yandex_storage_bucket" "momo-store-bucket" {
+  access_key = yandex_iam_service_account_static_access_key.s3_static_key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.s3_static_key.secret_key
+  bucket = local.image_bucket_name
+
+  anonymous_access_flags {
+    read = true
+    list = false
+    config_read = false
+  }
+  
+  max_size = 104857601
+  force_destroy = true
+}
+
+resource "yandex_storage_object" "images" {
+  access_key = yandex_iam_service_account_static_access_key.s3_static_key.access_key
+  secret_key = yandex_iam_service_account_static_access_key.s3_static_key.secret_key
+  for_each = fileset("../images/", "*")
+  bucket   = yandex_storage_bucket.momo-store-bucket.id
+  key      = each.value
+  source   = "../images/${each.value}"
+}
+
+
+provider "yandex" {
+  token       = var.token
+  cloud_id    = var.cloud_id
+  folder_id   = var.folder_id
+  zone        = "ru-central1-a"
+}
+
+terraform {
+  required_providers {
+    yandex = {
+      source  = "yandex-cloud/yandex"
+      version = ">= 0.87.0"
+    }
+  }
+  backend "s3" {
+    endpoint                     = "storage.yandexcloud.net"
+    bucket                       = "terraform-backend-bucket"
+    key                          = "terraform.tfstate"
+    region                       = "ru-central1"
+    skip_region_validation       = true
+    skip_credentials_validation  = true
+  }
+}
+
+
+
+
+
+
