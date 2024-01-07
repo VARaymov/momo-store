@@ -18,21 +18,11 @@ build-helm-chart:
     - |
       sed -i "s/^version:.*/version: $HELM_CHART_VERSION/" Chart.yaml
     - helm package . -d ./helm-releases
+    - ls -la
+    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/$HELM_CHART_VERSION/
+    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz
   artifacts:
     paths:
-      - ./helm-releases/*.tgz
+      - /helm-releases/*.tgz
   rules:
     - when: manual
-
-upload-helm-chart:
-  stage: release
-  variables:
-    GIT_STRATEGY: none
-  image: docker:20.10.12-dind-rootless
-  script:
-    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/
-    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz
-  needs:
-    - build-helm-chart
-  rules:
-      - when: manual
