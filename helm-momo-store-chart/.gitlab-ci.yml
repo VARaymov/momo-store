@@ -11,7 +11,6 @@ variables:
 
 build-helm-chart:
   stage: build
-  image: docker:20.10.12-dind-rootless
   script:
 #    - pwd
     - cd ./helm-momo-store-chart
@@ -26,6 +25,8 @@ build-helm-chart:
 
 upload-helm-chart:
   stage: release
+  variables:
+    GIT_STRATEGY: none
   image: docker:20.10.12-dind-rootless
   script:
     - curl -v -u "${NEXUS_REPO_HELM_USER:${NEXUS_REPO_HELM_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/
