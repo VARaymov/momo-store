@@ -1,0 +1,34 @@
+stages:
+  - build
+  - release
+
+include:
+  - project: 'templates/ci'
+    file: 'DockerInDockerTemplate.yml'
+
+variables:
+  HELM_CHART_VERSION: 0.1.${CI_PIPELINE_ID}
+
+build-helm-chart:
+  stage: build
+  image: docker:20.10.12-dind-rootless
+  script:
+    - echo "Current version: $HELM_CHART_VERSION"
+    - sed -i "s/^version:.*/version: $HELM_CHART_VERSION/" Chart.yaml
+    - helm package . -d ./helm-releases
+  artifacts:
+    paths:
+      - ./helm-releases/*.tgz
+  rules:
+    - when: manual
+
+upload-helm-chart:
+  stage: release
+  image: docker:20.10.12-dind-rootless
+  script:
+    - curl -v -u "${NEXUS_REPO_HELM_USER:${NEXUS_REPO_HELM_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/
+    - curl -v -u "${NEXUS_REPO_HELM_USER:${NEXUS_REPO_HELM_PASS}" --upload-file ./helm-release/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz
+  needs:
+    - build-helm-chart
+  rules:
+      - when: manual
