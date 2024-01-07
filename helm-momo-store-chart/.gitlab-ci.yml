@@ -13,9 +13,8 @@ build-helm-chart:
   stage: build
   image: docker:20.10.12-dind-rootless
   script:
-    - echo "Current version: $HELM_CHART_VERSION"
-    - sed -i "s/^version:.*/version: $HELM_CHART_VERSION/" Chart.yaml
-    - helm package . -d ./helm-releases
+    - chmode +x update-chart-version.sh
+    - ./update-chart-version.sh
   artifacts:
     paths:
       - ./helm-releases/*.tgz
