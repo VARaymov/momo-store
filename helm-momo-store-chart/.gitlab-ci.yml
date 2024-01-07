@@ -11,8 +11,8 @@ variables:
 
 build-helm-chart:
   stage: build
+  image: registry.gitlab.com/gitlab-org/cloud-deploy/helm3:latest   
   script:
-    - apt-get update && apt-get install -y helm
     - cd helm-momo-store-chart
     - echo "Current version - $HELM_CHART_VERSION"
     - |
