@@ -20,8 +20,8 @@ build-helm-chart:
     - helm package . -d ./helm-releases
     - ls -la
     - ls -la ./helm-releases
-    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/$HELM_CHART_VERSION/
-    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz ${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz
+    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz "${NEXUS_REPO_URL_HELM}/helm-charts/$HELM_CHART_VERSION/"
+    - curl -v -u "${NEXUS_REPO_USER:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz "${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz"
   artifacts:
     paths:
       - /helm-releases/*.tgz
