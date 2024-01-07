@@ -13,7 +13,7 @@ build-helm-chart:
   stage: build
   image: docker:20.10.12-dind-rootless
   script:
-    - chmode +x update-chart-version.sh
+    - chmod +x update-chart-version.sh
     - ./update-chart-version.sh
   artifacts:
     paths:
