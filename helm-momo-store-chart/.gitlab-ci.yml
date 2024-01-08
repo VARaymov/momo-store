@@ -1,6 +1,5 @@
 stages:
-  - build
-  - release
+  - upload
 
 include:
   - project: 'templates/ci'
@@ -10,7 +9,7 @@ variables:
   HELM_CHART_VERSION: 0.1.${CI_PIPELINE_ID}
 
 build-helm-chart:
-  stage: build
+  stage: upload
   image: alpine/helm:latest
   script:
     - cd helm-momo-store-chart
@@ -18,8 +17,6 @@ build-helm-chart:
     - |
       sed -i "s/^version:.*/version: $HELM_CHART_VERSION/" Chart.yaml
     - helm package . -d ./helm-releases
-    - ls -la
-    - ls -la ./helm-releases
     - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz "${NEXUS_REPO_URL_HELM}/helm-charts/$HELM_CHART_VERSION/momo-store-$HELM_CHART_VERSION.tgz"
     - curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}" --upload-file ./helm-releases/momo-store-$HELM_CHART_VERSION.tgz "${NEXUS_REPO_URL_HELM}/helm-charts/latest/momo-store-latest.tgz"
   rules:
