@@ -36,7 +36,7 @@ sonarqube-frontend-sast:
   image: sonarsource/sonar-scanner-cli
   script:
       - sonar-scanner
-        -Dsonar.sources=\frontend
+        -Dsonar.sources=application/frontend
         -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
         -Dsonar.host.url=${SONARQUBE_URL_FRONTEND}
         -Dsonar.login=${SONAR_LOGIN_FRONTEND}
