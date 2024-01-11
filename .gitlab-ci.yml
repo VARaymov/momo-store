@@ -29,4 +29,4 @@ helm-job:
     strategy: depend
   only:
     changes:
-      - infrastructue/helm-momo-store-chart/**/*
+      - infrastructure/helm-momo-store-chart/**/*
