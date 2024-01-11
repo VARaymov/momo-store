@@ -19,7 +19,7 @@ build-frontend:
     - until docker info; do sleep 1; done
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
   script:
-    - cd frontend
+    - cd application/frontend
     - >
       docker build
       --build-arg VERSION=$VERSION
