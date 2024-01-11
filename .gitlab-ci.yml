@@ -5,27 +5,27 @@ frontend-job:
   stage: module-pipelines
   trigger:
     include:
-      - "/frontend/.gitlab-ci.yml"
+      - "application//frontend/.gitlab-ci.yml"
     strategy: depend
   only:
     changes:
-    - frontend/**/*
+    - application/frontend/**/*
 
 backend-job:
   stage: module-pipelines
   trigger:
     include:
-      - "/backend/.gitlab-ci.yml"
+      - "application//backend/.gitlab-ci.yml"
     strategy: depend
   only:
     changes:
-      - backend/**/*
+      - application/backend/**/*
 
 helm-job:
   stage: module-pipelines
   trigger:
     include:
-      - "/helm-momo-store-chart/.gitlab-ci.yml"
+      - "infrastructure/helm-momo-store-chart/.gitlab-ci.yml"
     strategy: depend
   only:
     changes:
