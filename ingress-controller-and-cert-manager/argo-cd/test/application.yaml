@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: momo-store-application
+  namespace: argocd
+spec:
+  project: momo-store-project
+  destination:
+    namespace: momo-store
+    server: https://kubernetes.default.svc
+  source:
+    chart: momo-store
+    repoURL: https://nexus.k8s.praktikum-services.tech/repository/momo-store-helm-repository-valery-rayumov/
+    targetRevision: 0.1.1000037
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: false
