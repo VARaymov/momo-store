@@ -86,7 +86,7 @@ resource "yandex_kubernetes_node_group" "momo-store-groups-node" {
     }
 
     resources {
-      memory = 1
+      memory = 4
       cores  = 2
       core_fraction = 20
     }
