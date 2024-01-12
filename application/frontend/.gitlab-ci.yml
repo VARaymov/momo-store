@@ -2,7 +2,6 @@ stages:
   - build
   - test
   - release
-  - deploy
 
 include:
   - project: 'templates/ci'
@@ -66,28 +65,3 @@ upload-frontend-latest:
     - docker pull $CI_REGISTRY_IMAGE/store-frontend-nginx:$CI_COMMIT_SHA
     - docker tag $CI_REGISTRY_IMAGE/store-frontend-nginx:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE/store-frontend-nginx:latest
     - docker push $CI_REGISTRY_IMAGE/store-frontend-nginx:latest
-
-#deploy-frontend:
-#  stage: deploy
-#  image: alpine:3.15.0
-#  before_script:
-#    - apk add openssh-client bash
-#    - eval $(ssh-agent -s)
-#    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-#    - mkdir -p ~/.ssh
-#    - chmod 700 ~/.ssh
-#    - SSH_KNOWN_HOSTS=$(ssh-keyscan $DEV_HOST)
-#    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-#    - chmod 644 ~/.ssh/known_hosts
-#  script:
-#    - scp ${CI_PROJECT_DIR}/docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/docker-compose.yml
-#    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=sausage-store jwt=$CI_JOB_JWT)"
-#    - ssh ${DEV_USER}@${DEV_HOST}
-#      "export "VERSION=${VERSION}";
-#       export "CI_REGISTRY_IMAGE=${CI_REGISTRY_IMAGE}";
-#       export "CI_REGISTRY_PASSWORD=${CI_REGISTRY_PASSWORD}";
-#       export "CI_REGISTRY_USER=${CI_REGISTRY_USER}";
-#       export "CI_REGISTRY=${CI_REGISTRY}";
-#      /bin/bash -s " < ./frontend/frontend_deploy.sh
-#  rules:
-#    - when: manual
