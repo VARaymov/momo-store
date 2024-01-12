@@ -42,23 +42,10 @@ resource "yandex_vpc_address" "momo-store-address" {
   }
 }
 
-# Резервирование статического IP адресса 
-resource "yandex_vpc_address" "argo-cd-address" {
-  name = "argo-cd-address"
-  deletion_protection = "false"
-  external_ipv4_address {
-    zone_id = "ru-central1-a"
-  }
-}
-
 
 output "momo-store-address" {
   sensitive = false
   value = yandex_vpc_address.momo-store-address.external_ipv4_address[*].address
 }
 
-output "argo-cd-address" {
-  sensitive = false
-  value = yandex_vpc_address.argo-cd-address.external_ipv4_address[*].address
-}
 
