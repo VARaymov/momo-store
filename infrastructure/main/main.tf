@@ -137,10 +137,6 @@ resource "yandex_kubernetes_node_group" "momo-store-groups-node" {
   }
 }
 
-
-
-
-
 # Назначение роли "admin" сервисному аккаунту на уровне папки
 resource "yandex_resourcemanager_folder_iam_binding" "admin-binding" {
   folder_id = local.folder_id
@@ -258,9 +254,7 @@ resource "yandex_iam_service_account_static_access_key" "s3_static_key" {
   description        = "static access key for object storage"
 }
 
-# Таким образом, "momo-store-bucket" - это идентификатор ресурса, который позволяет вам ссылаться на созданный бакет в других частях вашего Terraform-кода. Когда вы обращаетесь к этому ресурсу, вы используете его идентификатор "momo-store-bucket", чтобы получить доступ к его атрибутам или передать его в другие ресурсы.
 
-# Поэтому, в вашем случае, momo-store-bucket - это просто локальное имя для идентификации этого ресурса внутри вашего Terraform-кода. Вы можете выбрать любое уникальное имя, которое вам нравится, при определении ресурсов в Terraform.
 resource "yandex_storage_bucket" "momo-store-bucket" {
   access_key = yandex_iam_service_account_static_access_key.s3_static_key.access_key
   secret_key = yandex_iam_service_account_static_access_key.s3_static_key.secret_key
@@ -309,9 +303,3 @@ terraform {
     skip_credentials_validation  = true
   }
 }
-
-
-
-
-
-
