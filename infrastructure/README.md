@@ -1,6 +1,6 @@
 # Общее устройство
 
-Пельменная - https://momo-store.valery-rayumov.ru
+Пельменная - https://momo-store.valery-rayumov.ru <br>
 ArgoCD - https://argo-cd.valery-rayumov.ru
 
 Сервисы пельменной работают в k8s-кластере Яндекс Cloud.
